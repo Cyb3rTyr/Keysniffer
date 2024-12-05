@@ -14,7 +14,7 @@ import platform  # provides information about the underlying platform on which t
 from pynput.keyboard import (
     Key,
     Listener,
-)  # used to control and monitor input devices such as the keyboard and mouse
+)  # used to control and monitor input devices such as the keyboard and mouse test
 
 import time  # used for tasks like pausing code execution, measuring the time taken by code to run
 import os  # provides a way to interact with the operating system and perform various system-level tasks
