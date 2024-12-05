@@ -57,6 +57,3 @@ class Keylogger:
 
         executable = create_string_buffer(512)
         h_process = windll
-
-
-sdf
