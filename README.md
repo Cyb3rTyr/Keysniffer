@@ -4,9 +4,6 @@
 >I am not responsible for any actions taken by others with this material. Use it responsibly and at your own risk.
 
 
-## Exlpanation : .... 
-
-
 # Server configuration:
 
 1. To run this code use `git clone https://github.com/davidbombal/express-server-basic.git`
