@@ -21,7 +21,7 @@ import os  # provides a way to interact with the operating system and perform va
 
 
 # =========================================== Hard code ==============================================
-
+dyjlncjkycxjkyx
 # server information
 ip_address = ""
 port_number = "8080"
