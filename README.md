@@ -13,4 +13,4 @@
 
 **Link:**       https://github.com/davidbombal/express-server-basic
 
-**Creator:**    David Bombal.
+**Creator:**    David Bombal
