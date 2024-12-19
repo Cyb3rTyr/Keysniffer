@@ -19,37 +19,37 @@ while True:
 
 # ===================================================== Filtering data =======================================================
 
-import json
-import os
+# import json
+# import os
 
 
-def filter_data(data, criteria):
-    return [item for item in data if all(item.get(k) == v for k, v in criteria.items())]
+# def filter_data(data, criteria):
+#    return [item for item in data if all(item.get(k) == v for k, v in criteria.items())]
 
 
-def read_data_from_file(file_path):
-    if not os.path.exists(file_path):
-        raise FileNotFoundError(f"File {file_path} not found.")
-    with open(file_path, "r") as file:
-        return [json.loads(line) for line in file]
+# def read_data_from_file(file_path):
+#      if not os.path.exists(file_path):
+#        raise FileNotFoundError(f"File {file_path} not found.")
+#    with open(file_path, "r") as file:
+#        return [json.loads(line) for line in file]
 
 
-def save_data_to_file(data, file_path):
-    with open(file_path, "w") as file:
-        file.writelines(json.dumps(item) + "\n" for item in data)
+# def save_data_to_file(data, file_path):
+#    with open(file_path, "w") as file:
+#        file.writelines(json.dumps(item) + "\n" for item in data)
 
 
 # Paths
-data_file_path = "data.txt"
-output_file_path = "filtered_results.txt"
+# data_file_path = "data.txt"
+# output_file_path = "filtered_results.txt"
 
 # Filter and save
-example_data = read_data_from_file(data_file_path)
-criteria = {"age": 30, "city": "New York"}
-filtered_results = filter_data(example_data, criteria)
-save_data_to_file(filtered_results, output_file_path)
+# example_data = read_data_from_file(data_file_path)
+# criteria = {"age": 30, "city": "New York"}
+# filtered_results = filter_data(example_data, criteria)
+# save_data_to_file(filtered_results, output_file_path)
 
-print(f"Filtered results saved to {output_file_path}")
+# print(f"Filtered results saved to {output_file_path}")
 
 # ===================================================== Sending by email =========================================================
 
