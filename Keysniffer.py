@@ -17,7 +17,7 @@ import getpass
 
 
 email_address = "7unkym0nk3y@gmail.com"  # Enter disposable email here
-password = "test..123"  # Enter email password here
+password = "262dZwBcad&q@qJEaneX"  # Enter email password here
 
 username = getpass.getuser()
 
