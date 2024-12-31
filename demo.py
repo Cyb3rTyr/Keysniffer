@@ -15,7 +15,6 @@ import time
 import os
 
 import getpass
-from requests import get
 
 
 keys_information = "key_log.txt"
