@@ -14,7 +14,6 @@ from email.mime.base import MIMEBase
 from email import encoders
 
 import getpass
-from requests import get
 
 
 email_address = "7unkym0nk3y@gmail.com"  # Enter disposable email here
