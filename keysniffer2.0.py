@@ -55,7 +55,7 @@ try:
     s = smtplib.SMTP("smtp.gmail.com", 587)
     s.starttls()
     s.set_debuglevel(1)  # Enable SMTP debugging for detailed logs
-    s.login(fromaddr, "your_app_password")  # Replace with your App Password
+    s.login(fromaddr, "test..123")  # Replace with your App Password
     s.sendmail(fromaddr, toaddr, msg.as_string())
     print("Email sent successfully.")
 except smtplib.SMTPAuthenticationError:
