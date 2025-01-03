@@ -1,0 +1,28 @@
+Emails:
+
+Phone_numbers:
+
+Urls:
+
+Credit_cards:
+
+Ip_addresses:
+  245.245.245.245
+  192.122.129.192
+
+Dates:
+
+Social_security_numbers:
+
+Common_words:
+  ('for', 5)
+  ('the', 5)
+  ('can', 4)
+  ('you', 4)
+  ('245', 4)
+  ('make', 3)
+  ('2501', 3)
+  ('test', 3)
+  ('691', 3)
+  ('filter', 2)
+

@@ -7,3 +7,4 @@
 >This is a Python script named Keysniffer. It is a classic keylogger designed to record keystrokes from the keyboard and filter them to identify valuable information. (This project is developed for educational purposes as part of a school assignment.)
 >
 >The identified valuable information includes ***phone numbers***, ***email addresses***, ***URLs***, ***passwords***, ***usernames***, ***credit card details***, ***IP addresses***, and ***social security numbers***.
+
