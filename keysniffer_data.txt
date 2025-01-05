@@ -1,18 +1,8 @@
 
-notepad
-hello it is me. 
-6916916916169
-
-691 691 691
-
-test
 
 255.255.255.255
 
-the main problem is with the filse existance, however if i make it repeat 3 times it will work ¨
 
 
-
-
-
-
+can you also add the comments from the old code
+also add the comment at the end with the examples 

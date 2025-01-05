@@ -1,14 +1,6 @@
 Emails:
 
 Phone_numbers:
-  69
-  69
-  69
-  61
-  69
-  69
-  69
-  69
   55
   55
   55
@@ -24,16 +16,7 @@ Ip_addresses:
 Dates:
 
 Social_security_numbers:
-  6916916916169
 
 Common_words:
   ('255', 4)
-  ('691', 3)
-  ('notepad', 1)
-  ('hello', 1)
-  ('it', 1)
-  ('is', 1)
-  ('me', 1)
-  ('6916916916169', 1)
-  ('test', 1)
 

