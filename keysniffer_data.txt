@@ -1,43 +1,18 @@
 
-11.01.2004 
-
-can you give me an exmaple for each one 
-can you make the filter for password every every
-make it just a simple filter that takes everything after email 
-make it seatch onl
-
-
-2501
-2501
-
-
-
-
-no
-2501
-245.245.245.245
-test
-
-
-can you remove for the passwod the need of pass: and for username the need of usr:
-can you explain what does the code search for in password and in username 
-
-noit
-192.122.129.192
-test
-qweqweqwe_sdf
-test..123
+notepad
+hello it is me. 
+6916916916169
 
 691 691 691
-note
+
 test
-john
 
-124.124.124.124
+255.255.255.255
 
-691691691
-619
-196-160-160-160
+the main problem is with the filse existance, however if i make it repeat 3 times it will work ¨
 
 
-  --> change mail 
+
+
+
+
