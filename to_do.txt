@@ -3,3 +3,5 @@
 > verify the filter --> adding a big text to the keysniffer_data.txt 
 
 > files existing handling 
+
+> create the .exe / .bat file to execute everything needed to work 
