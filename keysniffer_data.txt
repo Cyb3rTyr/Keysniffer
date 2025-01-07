@@ -1,9 +1,0 @@
-
-
-255.255.255.255
-
-
-
-can you also add the comments from the old code
-also add the comment at the end with the examples 
-can you add at the end the comment with the examples for each one 
