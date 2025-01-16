@@ -1,5 +1,10 @@
 # KeySniffer
 
+![ALT TEXT](image\mascot_racon.png) 
+
+---
+
+
 >[!Warning]
 >## Disclaimer
 >This material is strictly for educational and research purposes. Any misuse, distribution, or deployment of malware for malicious intent is illegal and unethical. Always operate in secure, controlled environments, and comply with all relevant laws and regulations.
@@ -34,7 +39,7 @@ The script identifies and records the following types of information:
      git clone https://github.com/yourusername/KeySniffer.git
      ```
    - If you do not have Git installed, you can download the repository as a ZIP file:
-     - Click the <span style="background-color: green; color: white;">**Code**</span> button and select **Download ZIP**.
+     - Click the green **Code** button and select **Download ZIP**.
      - Extract the ZIP file to a directory of your choice.
 
 2. **Install the Required Library**:
