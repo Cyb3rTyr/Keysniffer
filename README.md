@@ -42,8 +42,9 @@ The script identifies and records the following types of information:
 
 ---
 
-## Security Note
-Avoid storing passwords in plain text. Use environment variables or a secure secrets manager to protect sensitive information.
+>[!NOTE]
+>## Security Note
+>**Do not use private email accounts or personal passwords for this project.** It is strongly advised to use a separate, dedicated email account created specifically for this purpose. Avoid using any credentials tied to your personal or professional accounts, as this could pose a significant security risk.
 
 ---
 
