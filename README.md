@@ -1,6 +1,6 @@
 # KeySniffer
 
-![ALT TEXT](image\mascot_racon.png) 
+![mascot_racon.png](image\mascot_racon.png) 
 
 ---
 
