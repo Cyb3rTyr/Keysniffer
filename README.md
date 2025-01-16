@@ -28,19 +28,28 @@ The script identifies and records the following types of information:
 
 ## Setup and Usage
 
-1. **Install the Required Library**:
+1. **Download the Repository**:
+   - If you have Git installed, you can clone the repository by running:
+     ```bash
+     git clone https://github.com/yourusername/KeySniffer.git
+     ```
+   - If you do not have Git installed, you can download the repository as a ZIP file:
+     - Click the green **Code** button and select **Download ZIP**.
+     - Extract the ZIP file to a directory of your choice.
+
+2. **Install the Required Library**:
    - This script requires the `keyboard` library to capture keystrokes.
    - Install it by running the following command in your terminal:
      ```bash
      pip install keyboard
      ```
 
-2. **Modify Email Configuration**:
+3. **Modify Email Configuration**:
    - Open `KeySniffer.py` and locate the email configuration section.
    - Replace the placeholder information with the sender and receiver email addresses.
    - Use an app-specific password for the sender email (see below for instructions).
 
-3. **Create a Sender Email with App Password**:
+4. **Create a Sender Email with App Password**:
    - Create a new email account.
    - Log into the Google account for the sender email.
    - Search for "App Passwords" in your account settings.
