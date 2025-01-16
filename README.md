@@ -1,6 +1,6 @@
 # KeySniffer
 
-![mascot_racon.png](image\mascot_racon.png) 
+![mascot_racon](https://github.com/user-attachments/assets/bb218417-4458-4e98-9e4a-794101d95f42)
 
 ---
 
