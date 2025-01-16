@@ -17,7 +17,7 @@ This project was developed as part of a school assignment and is intended solely
 
 ## Features
 The script identifies and records the following types of information:
-- Phone numbers (e.g., +1 123-456-7890)
+- Phone numbers (e.g., +352 123 123 123)
 - Email addresses
 - URLs (HTTP and HTTPS)
 - Credit card details
