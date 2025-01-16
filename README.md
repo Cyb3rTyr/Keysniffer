@@ -48,4 +48,4 @@ Avoid storing passwords in plain text. Use environment variables or a secure sec
 ---
 
 ## License
-This project is licensed under [Your License]. See the LICENSE file for details.
+This project is licensed under ***LICENSE***. See the LICENSE file for details.
